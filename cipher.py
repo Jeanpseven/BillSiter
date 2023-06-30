@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Arte ASCII
-echo "                                                           
+echo """                                                           
                             ::::.                           
                             @@@@=                           
                             @@@@-                           
@@ -33,7 +33,7 @@ echo "
                       -#%%#*@= @#=. =@:                     
                            .@-.@*=*#*:                      
                             .  %-                           
-                                                                                           "
+                                                                                           """
 
 # Script de auditoria de segurança
 
