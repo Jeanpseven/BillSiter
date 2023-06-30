@@ -109,18 +109,25 @@ auditar_seguranca() {
   echo "Verificando privilégios de usuário:"
   id
 
+  # Escaneamento de diretórios
+  echo "Escaneando diretórios do host:"
+  dirb http://$host /usr/share/dirb/wordlists/common.txt
+
   # Finalização da auditoria de segurança
   echo "Auditoria de segurança concluída."
 }
 
-# Loop para interagir com o usuário
+# Loop principal do script
 while true; do
   echo "
-Opções:
-1. Realizar auditoria de segurança em um host
-2. Sair
-"
-  read -p "Digite a opção desejada: " opcao
+  === Script de Auditoria de Segurança ===
+
+  Opções:
+  1. Realizar auditoria de segurança
+  2. Sair
+
+  Digite a opção desejada:"
+  read opcao
 
   case $opcao in
     1)
