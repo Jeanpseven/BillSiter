@@ -35,6 +35,9 @@ echo "
                             .  %-                           
                                                                                            "
 
+# Nome do arquivo de log único
+log_file="log.txt"
+
 # Função para exibir a mensagem de saída
 sair() {
   echo "
@@ -45,19 +48,25 @@ sair() {
   exit 0
 }
 
-# Função para realizar a auditoria de segurança
+# Função para realizar a auditoria de segurança e gerar logs
 auditar_seguranca() {
   # Solicita o host a ser verificado
   echo "Digite o host a ser verificado:"
   read host
 
-  # Verificação do whois do host
+  # Inicie a gravação no arquivo de log
+  exec > "$log_file" 2>&1
+
+  # Registre a data e hora da auditoria no log
+  echo "Data e Hora da Auditoria: $(date)"
+  echo "Host Analisado: $host"
+
+  # Verificação WHOIS do host
   echo "Verificação WHOIS do host:"
   whois $host
 
   # Obtenção das coordenadas geográficas
   coordenadas=$(curl -s https://ipinfo.io/$host/loc)
-
   if [ -n "$coordenadas" ]; then
     echo "Coordenadas geográficas do host: $coordenadas"
   else
@@ -114,7 +123,10 @@ auditar_seguranca() {
   dirb http://$host /usr/share/dirb/wordlists/common.txt
 
   # Finalização da auditoria de segurança
-  echo "Auditoria de segurança concluída."
+  echo "Auditoria de segurança concluída para o host $host."
+
+  # Encerre a gravação no arquivo de log
+  exec > /dev/tty 2>&1
 }
 
 # Loop principal do script
