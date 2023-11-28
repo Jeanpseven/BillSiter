@@ -35,29 +35,18 @@ echo "
                             .  %-                           
                                                                                            "
 
-# Função para exibir a mensagem de saída
-sair() {
-  echo "
-=============================================
-   Oh não! Bill Cipher! Por favor, deixe-me em paz!
-=============================================
-"
-  exit 0
-}
-
 # Função para realizar a auditoria de segurança
 auditar_seguranca() {
   # Solicita o host a ser verificado
   echo "Digite o host a ser verificado:"
   read host
 
-  # Verificação do whois do host
+  # Verificação WHOIS do host
   echo "Verificação WHOIS do host:"
   whois $host
 
   # Obtenção das coordenadas geográficas
   coordenadas=$(curl -s https://ipinfo.io/$host/loc)
-
   if [ -n "$coordenadas" ]; then
     echo "Coordenadas geográficas do host: $coordenadas"
   else
@@ -72,9 +61,17 @@ auditar_seguranca() {
   echo "Verificando processos em execução:"
   ps aux
 
-  # Verificação de portas abertas
-  echo "Verificando portas abertas:"
-  nmap -p 1-65535 $host
+  # Verificação de portas abertas e versões de serviços
+  echo "Verificando portas abertas e versões de serviços:"
+  nmap -p 1-65535 -sV $host
+
+  # Obtenha as versões dos serviços e procure por exploits usando searchsploit
+  while read line; do
+    port=$(echo $line | cut -d'/' -f1)
+    service_version=$(echo $line | cut -d' ' -f3-)
+    echo "Procurando exploits para $service_version na porta $port:"
+    searchsploit "$service_version"
+  done < <(nmap -p 1-65535 --open --min-rate=1000 --max-retries=2 -oG - $host | grep "/open/")
 
   # Verificação de permissões de arquivos
   echo "Verificando permissões de arquivos:"
@@ -113,8 +110,10 @@ auditar_seguranca() {
   echo "Escaneando diretórios do host:"
   dirb http://$host /usr/share/dirb/wordlists/common.txt
 
-  # Finalização da auditoria de segurança
-  echo "Auditoria de segurança concluída."
+  # ... (additional security checks if needed)
+
+  # Mensagem de conclusão da auditoria de segurança
+  echo "Auditoria de segurança concluída para o host $host."
 }
 
 # Loop principal do script
