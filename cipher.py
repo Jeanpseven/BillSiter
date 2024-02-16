@@ -48,12 +48,6 @@ def perform_security_audit():
     except subprocess.CalledProcessError:
         print("Não foi possível obter as coordenadas geográficas do host.")
 
-    print("Verificando conexões de rede ativas:")
-    subprocess.run(["netstat", "-tuln"])
-
-    print("Verificando processos em execução:")
-    subprocess.run(["ps", "aux"])
-
     print("Verificando portas abertas e versões de serviços:")
     subprocess.run(["nmap", "-p", "1-65535", "-sV", host])
 
@@ -121,3 +115,4 @@ def main():
 if __name__ == "__main__":
     print_ascii_art()
     main()
+    
