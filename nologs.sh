@@ -53,14 +53,6 @@ auditar_seguranca() {
     echo "Não foi possível obter as coordenadas geográficas do host."
   fi
 
-  # Verificação de conexões de rede ativas
-  echo "Verificando conexões de rede ativas:"
-  netstat -tuln
-
-  # Verificação de processos em execução
-  echo "Verificando processos em execução:"
-  ps aux
-
   # Verificação de portas abertas e versões de serviços
   echo "Verificando portas abertas e versões de serviços:"
   nmap -p 1-65535 -sV $host
